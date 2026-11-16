@@ -1,0 +1,5 @@
+tài khoản admin: admin
+mật khẩu: Admin@123
+
+tài khoản customer: cavinhtien12@gmail.com
+mật khẩu: tien123n
