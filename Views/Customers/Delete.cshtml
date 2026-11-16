@@ -1,0 +1,53 @@
+﻿
+@model HotelBoking.Customer
+
+@{
+    ViewBag.Title = "Xóa khách hàng";
+}
+
+<section class="page-banner">
+    <div class="container">
+        <div class="eyebrow">Lumière Hotel</div>
+        <h1 class="section-heading">Xóa khách hàng</h1>
+    </div>
+</section>
+
+<section class="container section">
+    <div class="card p-4 p-lg-5">
+
+        <p class="text-danger">
+            Bạn có chắc chắn muốn xóa khách hàng này không?
+        </p>
+
+        <dl class="dl-horizontal">
+            <dt>Mã khách hàng</dt>
+            <dd>@Model.IDCus</dd>
+
+            <dt>Tên khách hàng</dt>
+            <dd>@Model.NameCus</dd>
+
+            <dt>Số điện thoại</dt>
+            <dd>@Model.PhoneCus</dd>
+
+            <dt>Email</dt>
+            <dd>@Model.EmailCus</dd>
+        </dl>
+
+        @using (Html.BeginForm("Delete", "Customers", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.IDCus)
+
+            <button type="submit" class="btn btn-danger">
+                Xác nhận xóa
+            </button>
+
+            @Html.ActionLink(
+                "Hủy",
+                "Index",
+                null,
+                new { @class = "btn btn-secondary ms-2" })
+        }
+
+    </div>
+</section>

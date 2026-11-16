@@ -1,0 +1,264 @@
+﻿@model HotelBoking.Booking
+
+@{
+    ViewBag.Title = "Chi tiết đặt phòng";
+
+    bool isAdmin = Session["Role"] != null
+                   && Session["Role"].ToString() == "Admin";
+
+    int soDem = 0;
+
+    if (Model.DateBooking.HasValue && Model.CheckOut.HasValue)
+    {
+        soDem = (Model.CheckOut.Value.Date - Model.DateBooking.Value.Date).Days;
+    }
+
+    double tongTien = 0;
+
+    if (Model.BookingDetails != null)
+    {
+        foreach (var detail in Model.BookingDetails)
+        {
+            double soLuong = Convert.ToDouble(detail.Quantity);
+            double donGia = Convert.ToDouble(detail.UnitPrice);
+
+            tongTien += soLuong * donGia;
+        }
+    }
+}
+
+<div class="container mt-4 mb-5">
+
+    <!-- TIÊU ĐỀ -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="font-weight-bold">Chi tiết đặt phòng</h2>
+            <p class="text-muted">
+                Thông tin chi tiết đơn đặt phòng của bạn
+            </p>
+        </div>
+
+        <span class="badge badge-success p-2">
+            Đặt phòng #@Model.ID
+        </span>
+    </div>
+
+    <hr />
+
+    <!-- THÔNG TIN ĐẶT PHÒNG -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Thông tin đặt phòng</h4>
+        </div>
+
+        <div class="card-body">
+
+            <dl class="row">
+
+                <dt class="col-sm-4">Mã đặt phòng</dt>
+                <dd class="col-sm-8">#@Model.ID</dd>
+
+                <dt class="col-sm-4">Trạng thái</dt>
+                <dd class="col-sm-8">@(String.IsNullOrWhiteSpace(Model.Status) ? "Đã đặt" : Model.Status)</dd>
+
+                <dt class="col-sm-4">Ngày đặt / nhận phòng</dt>
+                <dd class="col-sm-8">
+                    @(Model.DateBooking.HasValue
+                        ? Model.DateBooking.Value.ToString("dd/MM/yyyy")
+                        : "Chưa có ngày đặt")
+                </dd>
+
+                <dt class="col-sm-4">Ngày trả phòng</dt>
+                <dd class="col-sm-8">
+                    @(Model.CheckOut.HasValue
+                        ? Model.CheckOut.Value.ToString("dd/MM/yyyy")
+                        : "Chưa có ngày trả phòng")
+                </dd>
+
+                <dt class="col-sm-4">Số đêm lưu trú</dt>
+                <dd class="col-sm-8">
+                    @soDem đêm
+                </dd>
+
+                <dt class="col-sm-4">Khách hàng</dt>
+                <dd class="col-sm-8">
+                    @(Model.Customer != null
+                        ? Model.Customer.NameCus
+                        : "Chưa có thông tin")
+                </dd>
+
+                <dt class="col-sm-4">Địa chỉ</dt>
+                <dd class="col-sm-8">
+                    @(string.IsNullOrEmpty(Model.AddressDelivery)
+                        ? "Chưa cung cấp"
+                        : Model.AddressDelivery)
+                </dd>
+
+            </dl>
+
+        </div>
+    </div>
+
+    <!-- CHI TIẾT PHÒNG -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">Thông tin phòng đã đặt</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-striped">
+
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Tên phòng</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-right">Đơn giá</th>
+                            <th class="text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.BookingDetails != null
+                            && Model.BookingDetails.Any())
+                        {
+                            foreach (var detail in Model.BookingDetails)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @(detail.HotelRoom != null
+                                            ? detail.HotelRoom.NameRoom
+                                            : "Không có thông tin phòng")
+                                    </td>
+
+                                    <td class="text-center">
+                                        @detail.Quantity
+                                    </td>
+
+                                    <td class="text-right">
+                                        @String.Format(
+                                                 "{0:N0} VNĐ",
+                                                 detail.UnitPrice.GetValueOrDefault()
+                                             )
+                                    </td>
+
+                                    <td class="text-right">
+                                        @String.Format(
+                                                 "{0:N0} VNĐ",
+                                                 detail.Quantity * detail.UnitPrice.GetValueOrDefault()
+                                             )
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    Chưa có thông tin phòng đặt
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- TỔNG TIỀN -->
+            <div class="text-right mt-4">
+
+                <h4 class="text-muted">
+                    Tổng tiền đặt phòng
+                </h4>
+
+                <h2 class="text-danger font-weight-bold">
+                    @String.Format("{0:N0} VNĐ", tongTien)
+                </h2>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- THÔNG TIN THANH TOÁN -->
+    @if (!isAdmin)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Thanh toán</h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    Trạng thái thanh toán:
+                    @if (Model.Status == "Chưa thanh toán")
+                    {
+                        <span class="badge badge-warning">Chưa thanh toán</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-success">Đã thanh toán</span>
+                    }
+                </p>
+
+                @if (Model.Status == "Chưa thanh toán")
+                {
+                    <p class="text-muted">Vui lòng xác nhận thanh toán để hoàn tất đặt phòng.</p>
+                    @Html.ActionLink(
+                        "Thanh toán",
+                        "Payment",
+                        "Booking",
+                        new { id = Model.ID },
+                        new { @class = "btn btn-success" })
+                }
+                else
+                {
+                    <div class="alert alert-success mb-0">
+                        Đơn đặt phòng này đã được thanh toán và xác nhận.
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- NÚT CHỨC NĂNG -->
+    <div class="mt-4">
+
+        @if (isAdmin)
+        {
+            @Html.ActionLink(
+                     "Chỉnh sửa",
+                     "Edit",
+                     new { id = Model.ID },
+                     new { @class = "btn btn-primary mr-2" }
+                 )
+
+            @Html.ActionLink(
+                     "Quay lại",
+                     "Index",
+                     null,
+                     new { @class = "btn btn-secondary" }
+                 )
+        }
+        else
+        {
+            @Html.ActionLink(
+                     "Quay lại lịch sử đặt phòng",
+                     "History",
+                     "Booking",
+                     null,
+                     new { @class = "btn btn-secondary" }
+                 )
+        }
+
+    </div>
+
+</div>

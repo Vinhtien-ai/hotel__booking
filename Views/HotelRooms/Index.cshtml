@@ -1,0 +1,66 @@
+
+@model IEnumerable<HotelBoking.HotelRoom>
+
+@{
+    ViewBag.Title = "Danh sách phòng";
+}
+
+<h2>Danh sách phòng</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    @Html.ActionLink("Thêm phòng mới", "Create", null, new { @class = "btn btn-success" })
+</p>
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>Mã phòng</th>
+        <th>Tên phòng</th>
+        <th>Loại phòng</th>
+        <th>Giá phòng</th>
+        <th>Mô tả</th>
+        <th>Chức năng</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoomID)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.NameRoom)
+            </td>
+
+            <td>
+                @(item.RoomType1 != null
+                    ? item.RoomType1.NameType
+                    : item.RoomType)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.DescriptionRoom)
+            </td>
+
+            <td>
+                @Html.ActionLink("Chi tiết", "Details",
+                    new { id = item.RoomID })
+                |
+                @Html.ActionLink("Sửa", "Edit",
+                    new { id = item.RoomID })
+                |
+                @Html.ActionLink("Xóa", "Delete",
+                    new { id = item.RoomID })
+            </td>
+        </tr>
+    }
+</table>

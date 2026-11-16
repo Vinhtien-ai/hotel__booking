@@ -1,0 +1,245 @@
+﻿@model IEnumerable<HotelBoking.Booking>
+
+@{
+    bool isAdmin = Session["Role"] != null
+        && Session["Role"].ToString() == "Admin";
+
+    ViewBag.Title = isAdmin
+        ? "Quản lý đơn đặt phòng"
+        : "Lịch sử đặt phòng";
+
+    double totalRevenue = Model != null
+        ? Model.Sum(booking => booking.BookingDetails != null
+            ? booking.BookingDetails.Sum(detail =>
+                detail.Quantity * detail.UnitPrice) ?? 0
+            : 0)
+        : 0;
+
+    int totalBookings = Model != null ? Model.Count() : 0;
+}
+
+<section class="page-banner">
+    <div class="container">
+
+        <div class="eyebrow">
+            @(isAdmin ? "Lumière Hotel · Admin" : "My Lumière")
+        </div>
+
+        <h1 class="section-heading">
+            @(isAdmin
+                ? "Quản lý đơn đặt phòng"
+                : "Lịch sử đặt phòng")
+        </h1>
+
+        <p class="section-subtitle mb-0">
+            @(isAdmin
+                ? "Theo dõi tất cả đơn đặt phòng của khách hàng."
+                : "Theo dõi các kỳ lưu trú của bạn.")
+        </p>
+
+    </div>
+</section>
+
+<section class="container section">
+
+    <div class="card p-4">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
+
+        @if (isAdmin)
+        {
+            <div class="row mb-4">
+
+                <div class="col-md-6 mb-3">
+                    <div class="card p-3">
+                        <h6 class="text-muted">
+                            Tổng đơn đặt phòng
+                        </h6>
+
+                        <h2 class="mb-0">
+                            @totalBookings
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="card p-3">
+                        <h6 class="text-muted">
+                            Tổng giá trị đặt phòng
+                        </h6>
+
+                        <h2 class="mb-0">
+                            @String.Format("{0:N0} VNĐ", totalRevenue)
+                        </h2>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Mã đặt phòng</th>
+                        <th>Ngày nhận phòng</th>
+                        <th>Ngày trả phòng</th>
+
+                        @if (isAdmin)
+                        {
+                            <th>Khách hàng</th>
+                        }
+
+                        <th>Phòng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var booking in Model)
+                        {
+                            double bookingTotal =
+                                booking.BookingDetails != null
+                                ? booking.BookingDetails.Sum(x =>
+                                    x.Quantity * x.UnitPrice) ?? 0
+                                : 0;
+
+                            <tr>
+
+                                <td>
+                                    <strong>#@booking.ID</strong>
+                                </td>
+
+                                <td>
+                                    @(booking.DateBooking.HasValue
+                                        ? booking.DateBooking.Value.ToString("dd/MM/yyyy")
+                                        : "")
+                                </td>
+
+                                <td>
+                                    @(booking.CheckOut.HasValue
+                                        ? booking.CheckOut.Value.ToString("dd/MM/yyyy")
+                                        : "")
+                                </td>
+
+                                @if (isAdmin)
+                                {
+                                    <td>
+                                        @(booking.Customer != null
+                                            ? booking.Customer.NameCus
+                                            : "N/A")
+                                    </td>
+                                }
+
+                                <td>
+                                    @if (booking.BookingDetails != null
+                                        && booking.BookingDetails.Any())
+                                    {
+                                        foreach (var detail in booking.BookingDetails)
+                                        {
+                                            <div>
+                                                @(detail.HotelRoom != null
+                                                    ? detail.HotelRoom.NameRoom
+                                                    : "N/A")
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Chưa có phòng
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        @String.Format(
+                                                 "{0:N0} VNĐ",
+                                                 bookingTotal)
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @{ var currentStatus = String.IsNullOrWhiteSpace(booking.Status) ? "Đã đặt" : booking.Status; }
+                                    <span class="badge badge-info">@currentStatus</span>
+                                    @if (isAdmin)
+                                    {
+                                        using (Html.BeginForm("UpdateStatus", "Booking", new { id = booking.ID }, FormMethod.Post, new { @class = "mt-2" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.DropDownList("status", new SelectList(new[] { "Đã đặt", "Đã nhận phòng", "Đã trả phòng" }, currentStatus), new { @class = "form-control form-control-sm mb-1" })
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Cập nhật</button>
+                                        }
+                                    }
+                                </td>
+
+                                <td>
+                                    @Html.ActionLink(
+                                             "Xem chi tiết",
+                                             "Details",
+                                             new { id = booking.ID },
+                                             new
+                                             {
+                                                 @class = "btn btn-brand btn-sm"
+                                             })
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="@(isAdmin ? 8 : 7)"
+                                class="text-center py-4">
+
+                                @(isAdmin
+                                    ? "Chưa có đơn đặt phòng nào."
+                                    : "Chưa có lịch sử đặt phòng.")
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        @if (!isAdmin)
+        {
+            @Html.ActionLink(
+                     "Khám phá phòng nghỉ",
+                     "Index",
+                     "Room",
+                     null,
+                     new
+                     {
+                         @class = "btn btn-brand"
+                     })
+        }
+
+    </div>
+
+</section>

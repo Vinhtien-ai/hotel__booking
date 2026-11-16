@@ -1,0 +1,57 @@
+
+@model IEnumerable<HotelBoking.RoomType>
+
+@{
+    ViewBag.Title = "Danh sách loại phòng";
+}
+
+<h2>Danh sách loại phòng</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+{
+    <p>
+        @Html.ActionLink("Thêm loại phòng mới", "Create", null, new { @class = "btn btn-success" })
+    </p>
+}
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>Id</th>
+        <th>Mã loại phòng</th>
+        <th>Tên loại phòng</th>
+        <th>Chức năng</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.IDType)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.NameType)
+            </td>
+
+            <td>
+                @Html.ActionLink("Chi tiết", "Details", new { id = item.IDType })
+                @if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+                {
+                    @: |
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.IDType })
+                    @: |
+                    @Html.ActionLink("Xóa", "Delete", new { id = item.IDType })
+                }
+            </td>
+        </tr>
+    }
+</table>

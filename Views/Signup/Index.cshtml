@@ -1,0 +1,115 @@
+
+@model HotelBoking.Customer
+
+@{
+    ViewBag.Title = "Đăng ký";
+}
+
+<section class="auth-wrap">
+    <div class="card auth-card">
+        <div class="eyebrow">Join Lumière</div>
+
+        <h1 class="auth-title">Tạo tài khoản</h1>
+
+        <p class="text-muted mb-4">
+            Đăng ký để sẵn sàng cho kỳ nghỉ tiếp theo.
+        </p>
+
+        @using (Html.BeginForm("Index", "Signup", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "",
+                new { @class = "text-danger" })
+
+            <div class="mb-3">
+                <label for="NameCus">Họ và tên</label>
+
+                @Html.TextBoxFor(model => model.NameCus,
+                    new
+                         {
+                        @class = "form-control",
+                        placeholder = "Nguyễn Văn An"
+                    })
+
+                @Html.ValidationMessageFor(model => model.NameCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="EmailCus">Email</label>
+
+                @Html.TextBoxFor(model => model.EmailCus,
+                    new
+                         {
+                        @class = "form-control",
+                        type = "email",
+                        placeholder = "name@example.com"
+                    })
+
+                @Html.ValidationMessageFor(model => model.EmailCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="PhoneCus">Số điện thoại</label>
+
+                @Html.TextBoxFor(model => model.PhoneCus,
+                    new
+                         {
+                        @class = "form-control",
+                        type = "tel",
+                        placeholder = "09xx xxx xxx"
+                    })
+
+                @Html.ValidationMessageFor(model => model.PhoneCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label for="PasswordCus">Mật khẩu</label>
+
+                @Html.PasswordFor(model => model.PasswordCus,
+                    new
+                         {
+                        @class = "form-control",
+                        placeholder = "Tạo mật khẩu"
+                    })
+
+                @Html.ValidationMessageFor(model => model.PasswordCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-4">
+                <label for="confirmPassword">
+                    Xác nhận mật khẩu
+                </label>
+
+                <input name="confirmPassword"
+                       id="confirmPassword"
+                       class="form-control"
+                       type="password"
+                       placeholder="Nhập lại mật khẩu"
+                       required />
+            </div>
+
+            <button class="btn btn-brand btn-lg w-100"
+                    type="submit">
+                Tạo tài khoản
+            </button>
+        }
+
+        <p class="text-center text-muted mt-4 mb-0">
+            Đã có tài khoản?
+            @Html.ActionLink("Đăng nhập", "Index", "Login",
+                null, new { @class = "fw-semibold text-success" })
+        </p>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success mt-3">
+                @TempData["Success"]
+            </div>
+        }
+    </div>
+</section>

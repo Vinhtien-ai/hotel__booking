@@ -1,0 +1,171 @@
+﻿@model IEnumerable<HotelBoking.HotelRoom>
+
+@{
+    ViewBag.Title = "Giỏ đặt phòng";
+}
+
+<div class="container mt-4 mb-5">
+
+    <h2 class="mb-4">Giỏ đặt phòng</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            Giỏ đặt phòng của bạn đang trống.
+        </div>
+
+        <a href="@Url.Action("Index", "Room")"
+           class="btn btn-primary">
+            Xem danh sách phòng
+        </a>
+    }
+    else
+    {
+        <!-- DANH SÁCH PHÒNG -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Mã phòng</th>
+                        <th>Tên phòng</th>
+                        <th>Loại phòng</th>
+                        <th>Giá phòng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var room in Model)
+                    {
+                        <tr>
+                            <td>@room.RoomID</td>
+
+                            <td>@room.NameRoom</td>
+
+                            <td>
+                                @(room.RoomType1 != null
+                                    ? room.RoomType1.NameType
+                                    : "Chưa phân loại")
+                            </td>
+
+                            <td>
+                                @String.Format("{0:N0} VNĐ", room.Price)
+                            </td>
+
+                            <td>
+                                <a href="@Url.Action("Details", "Room", new { id = room.RoomID })"
+                                   class="btn btn-sm btn-info">
+                                    Chi tiết
+                                </a>
+
+                                @using (Html.BeginForm("Remove", "Cart", FormMethod.Post, new { @class = "d-inline" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="roomId" value="@room.RoomID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Xóa
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TIẾP TỤC CHỌN PHÒNG -->
+        <a href="@Url.Action("Index", "Room")"
+           class="btn btn-secondary mb-4">
+            Tiếp tục chọn phòng
+        </a>
+
+        <hr />
+
+        <!-- FORM XÁC NHẬN ĐẶT PHÒNG -->
+        <div class="card shadow-sm mt-4">
+
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">
+                    Xác nhận đặt phòng
+                </h4>
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+                    Vui lòng nhập thông tin kỳ lưu trú của bạn.
+                </p>
+
+                @using (Html.BeginForm(
+                    "SubmitBooking",
+                    "Booking",
+                    FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="row">
+
+                        <!-- NGÀY NHẬN PHÒNG -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Ngày nhận phòng
+                            </label>
+
+                            <input type="date"
+                                   name="checkIn"
+                                   class="form-control"
+                                   required />
+                        </div>
+
+                        <!-- NGÀY TRẢ PHÒNG -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Ngày trả phòng
+                            </label>
+
+                            <input type="date"
+                                   name="checkOut"
+                                   class="form-control"
+                                   required />
+                        </div>
+
+                    </div>
+                    <!-- YÊU CẦU ĐẶC BIỆT -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Yêu cầu đặc biệt
+                        </label>
+
+                        <textarea name="specialRequest"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Ghi chú thêm nếu có..."></textarea>
+                    </div>
+
+                    <!-- NÚT XÁC NHẬN -->
+                    <button type="submit"
+                            class="btn btn-success btn-lg w-100">
+
+                        Xác nhận đặt phòng
+
+                    </button>
+                }
+
+            </div>
+        </div>
+    }
+</div>

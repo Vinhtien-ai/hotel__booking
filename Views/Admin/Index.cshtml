@@ -1,0 +1,74 @@
+@{
+    ViewBag.Title = "Trang quản trị";
+    int totalRooms = ViewBag.TotalRooms == null ? 0 : (int)ViewBag.TotalRooms;
+    int totalRoomTypes = ViewBag.TotalRoomTypes == null ? 0 : (int)ViewBag.TotalRoomTypes;
+    int totalCustomers = ViewBag.TotalCustomers == null ? 0 : (int)ViewBag.TotalCustomers;
+    int totalBookings = ViewBag.TotalBookings == null ? 0 : (int)ViewBag.TotalBookings;
+}
+
+<section class="container py-5">
+    <div class="mb-4">
+        <div class="text-uppercase text-muted small mb-2">Lumière Hotel · Admin</div>
+        <h1 class="display-6">Trang quản trị</h1>
+        <p class="text-muted mb-0">Tổng quan và truy cập các chức năng quản lý khách sạn.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Danh sách phòng</div>
+                <div class="fs-2 fw-semibold">@totalRooms</div>
+            </div></div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Loại phòng</div>
+                <div class="fs-2 fw-semibold">@totalRoomTypes</div>
+            </div></div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Khách hàng</div>
+                <div class="fs-2 fw-semibold">@totalCustomers</div>
+            </div></div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <div class="text-muted small">Đơn đặt phòng</div>
+                <div class="fs-2 fw-semibold">@totalBookings</div>
+            </div></div>
+        </div>
+    </div>
+
+    <h2 class="h4 mb-3">Chức năng quản lý</h2>
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex flex-column">
+                <h3 class="h5">Danh sách phòng</h3>
+                <p class="text-muted">Xem, thêm, sửa và xóa phòng nghỉ.</p>
+                <div class="mt-auto">@Html.ActionLink("Mở danh sách phòng", "Index", "HotelRooms", null, new { @class = "btn btn-primary" })</div>
+            </div></div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex flex-column">
+                <h3 class="h5">Loại phòng</h3>
+                <p class="text-muted">Quản lý các loại phòng của khách sạn.</p>
+                <div class="mt-auto">@Html.ActionLink("Quản lý loại phòng", "Index", "RoomTypes", null, new { @class = "btn btn-primary" })</div>
+            </div></div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex flex-column">
+                <h3 class="h5">Khách hàng</h3>
+                <p class="text-muted">Xem và quản lý thông tin khách hàng.</p>
+                <div class="mt-auto">@Html.ActionLink("Quản lý khách hàng", "Index", "Customers", null, new { @class = "btn btn-primary" })</div>
+            </div></div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex flex-column">
+                <h3 class="h5">Đơn đặt phòng</h3>
+                <p class="text-muted">Theo dõi đơn đặt phòng và cập nhật trạng thái.</p>
+                <div class="mt-auto">@Html.ActionLink("Quản lý Booking", "Index", "Booking", null, new { @class = "btn btn-primary" })</div>
+            </div></div>
+        </div>
+    </div>
+</section>

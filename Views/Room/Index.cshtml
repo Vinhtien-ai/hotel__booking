@@ -1,0 +1,124 @@
+﻿
+@model IEnumerable<HotelBoking.HotelRoom>
+
+@{
+    ViewBag.Title = "Khám phá phòng";
+}
+
+<section class="page-banner">
+    <div class="container">
+        <div class="eyebrow">Lumière accommodation</div>
+
+        <h1 class="section-heading">
+            Khám phá phòng nghỉ
+        </h1>
+
+        <p class="section-subtitle mb-0">
+            Những không gian được chọn lọc để mang lại kỳ nghỉ dễ chịu.
+        </p>
+    </div>
+</section>
+
+<section class="container section pt-5">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row g-4">
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (var room in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card room-card">
+
+                        @if (!string.IsNullOrEmpty(room.ImageRoom))
+                        {
+                            <img class="room-card-image"
+                                 src="@Url.Content(room.ImageRoom)"
+                                 alt="@room.NameRoom" />
+                        }
+                        else
+                        {
+                            <img class="room-card-image"
+                                 src="@Url.Content("~/Images/hotel4.jpg")"
+                                 alt="@room.NameRoom" />
+                        }
+
+                        <div class="card-body">
+
+                            <div class="room-type">
+                                @(room.RoomType1 != null
+                                    ? room.RoomType1.NameType
+                                    : "Chưa phân loại")
+                            </div>
+
+                            <h3 class="card-title">
+                                @room.NameRoom
+                            </h3>
+
+                            <p class="room-meta">
+                                @room.DescriptionRoom
+                            </p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <div class="price">
+                                    @(room.Price.HasValue
+                                        ? room.Price.Value.ToString("N0") + " đ"
+                                        : "Liên hệ")
+                                    <small>/ đêm</small>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    @Html.ActionLink(
+                                        "Xem phòng",
+                                        "Details",
+                                        "Room",
+                                        new { id = room.RoomID },
+                                        new { @class = "btn btn-outline-brand btn-sm" }
+                                    )
+
+                                    @if (Session["Role"] != null &&
+                                         Session["Role"].ToString() == "Customer")
+                                    {
+                                        using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post, new { @class = "d-inline" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="roomId" value="@room.RoomID" />
+                                            <button type="submit" class="btn btn-brand btn-sm">
+                                                Thêm vào giỏ
+                                            </button>
+                                        }
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Hiện chưa có phòng khách sạn.
+                </div>
+            </div>
+        }
+
+    </div>
+
+</section>

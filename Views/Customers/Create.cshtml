@@ -1,0 +1,67 @@
+﻿
+@model HotelBoking.Customer
+
+@{
+    ViewBag.Title = "Thêm khách hàng";
+}
+
+<section class="page-banner">
+    <div class="container">
+        <div class="eyebrow">Lumière Hotel</div>
+        <h1 class="section-heading">Thêm khách hàng</h1>
+        <p class="section-subtitle mb-0">
+            Nhập thông tin khách hàng mới.
+        </p>
+    </div>
+</section>
+
+<section class="container section">
+    <div class="card p-4 p-lg-5">
+
+        @using (Html.BeginForm("Create", "Customers", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "",
+                new { @class = "text-danger" })
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.NameCus, "Tên khách hàng")
+
+                @Html.TextBoxFor(model => model.NameCus,
+                    new { @class = "form-control", required = "required" })
+
+                @Html.ValidationMessageFor(model => model.NameCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.PhoneCus, "Số điện thoại")
+
+                @Html.TextBoxFor(model => model.PhoneCus,
+                    new { @class = "form-control", type = "tel" })
+
+                @Html.ValidationMessageFor(model => model.PhoneCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.EmailCus, "Email")
+
+                @Html.TextBoxFor(model => model.EmailCus,
+                    new { @class = "form-control", type = "email" })
+
+                @Html.ValidationMessageFor(model => model.EmailCus,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <button type="submit" class="btn btn-brand">
+                Lưu khách hàng
+            </button>
+
+            @Html.ActionLink("Quay lại", "Index", null,
+                new { @class = "btn btn-secondary ms-2" })
+        }
+
+    </div>
+</section>

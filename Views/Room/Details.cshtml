@@ -1,0 +1,110 @@
+﻿@model HotelBoking.HotelRoom
+
+@{
+    ViewBag.Title = "Chi tiết phòng";
+}
+
+<section class="container section">
+
+    <div class="mb-4">
+        <div class="eyebrow">
+            Chi tiết lưu trú · Lumière
+        </div>
+
+        <h1 class="section-heading">
+            @Model.NameRoom
+        </h1>
+
+        <p class="room-meta">
+            @(Model.RoomType1 != null
+                ? Model.RoomType1.NameType
+                : "Chưa phân loại")
+        </p>
+    </div>
+
+    <div class="row g-4 align-items-stretch">
+
+        <div class="col-lg-7">
+
+            @if (!string.IsNullOrEmpty(Model.ImageRoom))
+            {
+                <img class="detail-image"
+                     src="@Url.Content(Model.ImageRoom)"
+                     alt="@Model.NameRoom" />
+            }
+            else
+            {
+                <img class="detail-image"
+                     src="@Url.Content("~/Images/hotel4.jpg")"
+                     alt="@Model.NameRoom" />
+            }
+
+        </div>
+
+        <div class="col-lg-5">
+
+            <div class="card detail-panel h-100">
+
+                <div class="room-type">
+                    @(Model.RoomType1 != null
+                        ? Model.RoomType1.NameType
+                        : "Phòng khách sạn")
+                </div>
+
+                <h2 class="auth-title mt-2">
+                    @Model.NameRoom
+                </h2>
+
+                <div class="price my-3">
+                    @(Model.Price.HasValue
+                        ? Model.Price.Value.ToString("N0") + " đ"
+                        : "Liên hệ")
+
+                    <small>/ đêm</small>
+                </div>
+
+                <p class="text-muted">
+                    @Model.DescriptionRoom
+                </p>
+
+                <hr />
+
+                <h6 class="fw-bold">
+                    Thông tin phòng
+                </h6>
+
+                <p>
+                    Mã phòng: @Model.RoomID
+                </p>
+
+                <p>
+                    Loại phòng:
+                    @(Model.RoomType1 != null
+                        ? Model.RoomType1.NameType
+                        : "Chưa phân loại")
+                </p>
+
+                @using (Html.BeginForm(
+                    "AddToCart",
+                    "Cart",
+                    FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="roomId"
+                           value="@Model.RoomID" />
+
+                    <button type="submit"
+                            class="btn btn-brand btn-lg w-100 mt-4">
+                        Thêm vào giỏ hàng
+                    </button>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

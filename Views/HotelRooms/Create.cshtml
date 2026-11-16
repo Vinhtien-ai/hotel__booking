@@ -1,0 +1,104 @@
+﻿```cshtml
+@model HotelBoking.HotelRoom
+
+@{
+    ViewBag.Title = "Thêm phòng mới";
+}
+
+<h2>Thêm phòng mới</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+
+        @Html.ValidationSummary(true, "",
+            new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NameRoom,
+                "Tên phòng",
+                new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NameRoom,
+                    new { htmlAttributes = new { @class = "form-control" } })
+
+                @Html.ValidationMessageFor(model => model.NameRoom,
+                    "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RoomType,
+                "Loại phòng",
+                new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.RoomType,
+                    (SelectList)ViewBag.RoomType,
+                    "-- Chọn loại phòng --",
+                    new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(model => model.RoomType,
+                    "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price,
+                "Giá phòng",
+                new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Price,
+                    new { htmlAttributes = new { @class = "form-control" } })
+
+                @Html.ValidationMessageFor(model => model.Price,
+                    "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DescriptionRoom,
+                "Mô tả phòng",
+                new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.DescriptionRoom,
+                    new { @class = "form-control", rows = 4 })
+
+                @Html.ValidationMessageFor(model => model.DescriptionRoom,
+                    "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImageRoom,
+                "Đường dẫn ảnh",
+                new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ImageRoom,
+                    new { htmlAttributes = new { @class = "form-control" } })
+
+                @Html.ValidationMessageFor(model => model.ImageRoom,
+                    "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Thêm phòng"
+                       class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Quay lại danh sách", "Index")
+</div>
+```

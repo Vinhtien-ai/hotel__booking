@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Lumière Hotel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="~/Content/site.css" rel="stylesheet" />
+    <link href="~/Content/home.css" rel="stylesheet" />
+</head>
+
+<body class="lumiere-site">
+
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+
+                <a class="navbar-brand brand-mark"
+                   href="@Url.Action("Index", "Home")">
+                    LUMIÈRE
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNav"
+                        aria-label="Mở menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+
+                    <div class="navbar-nav mx-auto">
+
+                        @Html.ActionLink(
+                                 "Trang chủ",
+                                 "Index",
+                                 "Home",
+                                 null,
+                                 new { @class = "nav-link" })
+
+                        @if (Session["Role"] == null ||
+                             Session["Role"].ToString() != "Admin")
+                        {
+                            @Html.ActionLink(
+                                     "Phòng nghỉ",
+                                     "Index",
+                                     "Room",
+                                     null,
+                                     new { @class = "nav-link" })
+                        }
+
+
+                        @* MENU ADMIN *@
+                        @if (Session["Role"] != null &&
+                             Session["Role"].ToString() == "Admin")
+                        {
+                            @Html.ActionLink(
+                                     "Trang quản trị",
+                                     "Index",
+                                     "Admin",
+                                     null,
+                                     new { @class = "nav-link" })
+
+                            @Html.ActionLink(
+                                     "Quản lý khách hàng",
+                                     "Index",
+                                     "Customers",
+                                     null,
+                                     new { @class = "nav-link" })
+
+                            @Html.ActionLink(
+                                     "Danh sách phòng",
+                                     "Index",
+                                     "HotelRooms",
+                                     null,
+                                     new { @class = "nav-link" })
+
+                            @Html.ActionLink(
+                                     "Quản lý loại phòng",
+                                     "Index",
+                                     "RoomTypes",
+                                     null,
+                                     new { @class = "nav-link" })
+
+                            @Html.ActionLink(
+                                     "Quản lý Booking",
+                                     "Index",
+                                     "Booking",
+                                     null,
+                                     new { @class = "nav-link" })
+                        }
+
+                        @* MENU CUSTOMER *@
+                        @if (Session["Role"] != null &&
+                             Session["Role"].ToString() == "Customer")
+                        {
+                            
+
+                            @Html.ActionLink(
+                                     "Giỏ đặt phòng",
+                                     "Index",
+                                     "Cart",
+                                     null,
+                                     new { @class = "nav-link" })
+
+                            @Html.ActionLink(
+                                     "Lịch sử đặt phòng",
+                                     "History",
+                                     "Booking",
+                                     null,
+                                     new { @class = "nav-link" })
+                        }
+
+                    </div>
+
+                    <div class="navbar-nav nav-actions">
+
+                        @* ADMIN *@
+                        @if (Session["Role"] != null &&
+                             Session["Role"].ToString() == "Admin")
+                        {
+                            <span class="nav-link">
+                                Xin chào Admin, @Session["NameUser"]
+                            </span>
+
+                            @Html.ActionLink(
+                                     "Đăng xuất",
+                                     "Logout",
+                                     "Login",
+                                     null,
+                                     new { @class = "btn btn-brand btn-sm" })
+                        }
+
+                        @* CUSTOMER *@
+                        else if (Session["Role"] != null &&
+                                 Session["Role"].ToString() == "Customer")
+                        {
+                            <span class="nav-link">
+                                Xin chào, @Session["NameCus"]
+                            </span>
+
+                            @Html.ActionLink(
+                                     "Đăng xuất",
+                                     "Logout",
+                                     "Login",
+                                     null,
+                                     new { @class = "btn btn-brand btn-sm" })
+                        }
+
+                        @* CHƯA ĐĂNG NHẬP *@
+                        else
+                        {
+                            @Html.ActionLink(
+                                     "Đăng nhập",
+                                     "Index",
+                                     "Login",
+                                     null,
+                                     new { @class = "nav-link login-link" })
+
+                            @Html.ActionLink(
+                                     "Tạo tài khoản",
+                                     "Index",
+                                     "Signup",
+                                     null,
+                                     new { @class = "btn btn-brand btn-sm" })
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="site-main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+
+        <div class="footer-top-line"></div>
+
+        <div class="container footer-inner">
+
+            <div>
+                <div class="brand-mark footer-brand">
+                    LUMIÈRE
+                </div>
+
+                <p class="footer-copy">
+                    Một khoảng nghỉ tinh tế, dành riêng cho bạn.
+                </p>
+            </div>
+
+            <div class="footer-note">
+                © @DateTime.Now.Year Lumière Hotel · Đồ án thực hành ASP.NET MVC5
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/site.js"></script>
+
+</body>
+</html>
